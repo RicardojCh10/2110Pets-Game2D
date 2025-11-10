@@ -34,6 +34,9 @@ public class PlayerMovement : MonoBehaviour
     private bool isCrouching = false;
     private Vector2 standingColliderSize;
     private Vector2 standingColliderOffset;
+
+    //Variable de animacion
+    private Animator animator;
     
     // (Hemos eliminado las variables de PlayerControls, Awake, OnEnable y OnDisable
     // porque el componente PlayerInput se encarga de eso ahora)
@@ -49,6 +52,9 @@ public class PlayerMovement : MonoBehaviour
 
         // Establecer la gravedad inicial
         rb.gravityScale = baseGravityScale;
+
+        // Obtener el componente Animator
+        animator = GetComponent<Animator>();
     }
 
     // --- FUNCIONES PÚBLICAS DE EVENTOS ---
@@ -59,6 +65,13 @@ public class PlayerMovement : MonoBehaviour
         // Leemos el valor Vector2 de la acción "Move"
         // y solo nos quedamos con el componente horizontal (X)
         moveInputX = context.ReadValue<Vector2>().x;
+
+        // Actualizar la animación de correr
+        if (animator != null)
+        {
+            bool isWalking = Mathf.Abs(moveInputX) > 0.1f;
+            animator.SetBool("Walking", isWalking);
+        }
     }
 
     public void OnJump(InputAction.CallbackContext context)
