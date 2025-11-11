@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 400029dde8bbd6a47aa57c02a8bbffaf
+guid: 585f8e7723f0049448e097b5fd39097f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7486289871488628891
-    second: BG-1_0
+      213: -6899527831451061053
+    second: GameOver_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BG-1_0
+      name: GameOver_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1536
-        height: 1024
+        width: 1800
+        height: 1080
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b983fab59f4a4e760800000000000000
-      internalID: 7486289871488628891
+      spriteID: 3c430781ef3ff30a0800000000000000
+      internalID: -6899527831451061053
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BG-1_0: 7486289871488628891
+      GameOver_0: -6899527831451061053
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem; // --- NUEVO: Para controlar el PlayerInput
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,34 +11,29 @@ public class GameManager : MonoBehaviour
 
     [Header("Referencias de la UI")]
     public GameObject hudCanvas;
-    public Slider healthSlider;
+    public Slider healthSlider; // <-- La barra de vida de Aiden
     public TextMeshProUGUI scoreText;
     public GameObject gameOverPanel;
-    public Slider kiroHealthSlider;
-    public GameObject levelCompletePanel; // --- NUEVO ---
+    public GameObject levelCompletePanel;
+    public TextMeshProUGUI levelCompleteText; //  Referencia al texto
 
     [Header("Referencias del Jugador")]
-    public PlayerInput playerInput; // --- NUEVO: Arrastra el componente "Player Input" de Aiden aquí
+    public PlayerInput playerInput; // Lo encontraremos automáticamente
 
     [Header("Variables del Jugador")]
     public int maxPlayerHealth = 100;
     private int currentPlayerHealth;
-    private int currentScore = 0;
+    private int currentScore = 0; // El puntaje se mantiene entre niveles
 
-    [Header("Variables de Kiro")]
-    public float maxKiroHealth = 60f;
-    public float healthDrainPerSecond = 1f;
-    private float currentKiroHealth;
-
-    // --- NUEVO: Nombres de Escenas (¡Asegúrate de que coincidan!) ---
+    // --- MODIFICADO: Lista de niveles ---
     [Header("Configuración de Nivel")]
-    public string nextLevelName = "Nivel_2";
+    public string[] gameLevelSceneNames; // La lista de tus niveles
     public string mainMenuSceneName = "MainMenu";
+    private int currentLevelIndex = 0;
 
 
     private void Awake()
     {
-        // ... (Tu código de Awake no cambia) ...
         if (Instance == null)
         {
             Instance = this;
@@ -52,95 +47,139 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Start()
+    // --- Detectar cargas de escenas ---
+    void OnEnable()
     {
-        // --- NUEVO: Habilitar el input al inicio ---
-        if (playerInput != null)
-        {
-            playerInput.ActivateInput();
-        }
-        Time.timeScale = 1f; // Nos aseguramos de que el juego no esté pausado
-
-        // ... (El resto de tu código de Start no cambia) ...
-        currentPlayerHealth = maxPlayerHealth;
-        healthSlider.maxValue = maxPlayerHealth;
-        healthSlider.value = currentPlayerHealth;
-        scoreText.text = "Monedas: 0";
-        gameOverPanel.SetActive(false); 
-        levelCompletePanel.SetActive(false); // --- NUEVO: Asegurarse de que esté apagado
-
-        if (kiroHealthSlider != null)
-        {
-            currentKiroHealth = maxKiroHealth;
-            kiroHealthSlider.maxValue = maxKiroHealth;
-            kiroHealthSlider.value = currentKiroHealth;
-        }
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    void Update()
+    void OnDisable()
     {
-        // ... (Tu código de Update para Kiro no cambia) ...
-        if (kiroHealthSlider != null && currentKiroHealth > 0)
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // --- Se llama CADA VEZ que se carga una escena ---
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == mainMenuSceneName) return; // Si es el menú, no hagas nada
+
+        // Sincroniza el índice del nivel actual
+        bool foundLevel = false;
+        for (int i = 0; i < gameLevelSceneNames.Length; i++)
         {
-            currentKiroHealth -= healthDrainPerSecond * Time.deltaTime;
-            kiroHealthSlider.value = currentKiroHealth; 
-            if (currentKiroHealth <= 0)
+            if (gameLevelSceneNames[i] == scene.name)
             {
-                KiroDies();
+                currentLevelIndex = i;
+                foundLevel = true;
+                break;
             }
         }
+
+        if (foundLevel)
+        {
+            SetupNewLevel();
+        }
     }
 
-    // --- NUEVO: Función principal para Nivel Completado ---
+    // Lógica de reinicio para CADA nivel
+    void SetupNewLevel()
+    {
+        // 1. Encontrar al nuevo jugador (¡NECESITA EL TAG "Player"!)
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerInput = playerObject.GetComponent<PlayerInput>();
+            playerInput.ActivateInput();
+        }
+        else
+        {
+            Debug.LogError("¡No se encontró al jugador! Asegúrate de que Aiden tenga el Tag 'Player'.");
+        }
+
+        // 2. Reiniciar el tiempo
+        Time.timeScale = 1f; 
+
+        // 3. Reiniciar estadísticas del jugador
+        currentPlayerHealth = maxPlayerHealth;
+        if(healthSlider != null) 
+        {
+            healthSlider.maxValue = maxPlayerHealth; // <-- Asegúrate de poner el MaxValue
+            healthSlider.value = maxPlayerHealth;
+        }
+
+        // 4. Actualizar puntaje (NO lo reiniciamos, se mantiene)
+        if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
+
+        // 5. Ocultar paneles
+        if(gameOverPanel != null) gameOverPanel.SetActive(false); 
+        if(levelCompletePanel != null) levelCompletePanel.SetActive(false);
+    }
+
+    // --- Update() ahora está vacío, puedes incluso borrar la función si quieres ---
+    void Update()
+    {
+        // (La lógica de Kiro se ha eliminado)
+    }
+
+    // --- Función para Nivel Completado ---
+    // public void CompleteLevel()
+    // {
+    //     if (playerInput != null) playerInput.DeactivateInput();
+    //     Time.timeScale = 0f;
+    //     if(levelCompletePanel != null) levelCompletePanel.SetActive(true);
+    // }
     public void CompleteLevel()
     {
-        if (playerInput != null)
-        {
-            playerInput.DeactivateInput(); // Desactiva el control del jugador
-        }
+        // 1. Desactivar control
+        if (playerInput != null) playerInput.DeactivateInput();
         Time.timeScale = 0f; // Pausa el juego
-        levelCompletePanel.SetActive(true); // Muestra el panel de victoria
+
+        // 2. Calcular el número del nivel (basado en el índice)
+        int levelNumber = currentLevelIndex + 1;
+
+        // 3. Escribir el mensaje correcto
+        if (levelCompleteText != null)
+        {
+            // Comprueba si es el último nivel (el jefe final)
+            if (currentLevelIndex == gameLevelSceneNames.Length - 1)
+            {
+                levelCompleteText.text = "¡VICTORIA! ¡Has completado el juego! ";
+            }
+            else
+            {
+                levelCompleteText.text = $"¡Felicidades! Has completado el Nivel {levelNumber} ";
+            }
+        }
+
+        // 4. Mostrar el panel
+        if(levelCompletePanel != null) levelCompletePanel.SetActive(true);
     }
 
-    // --- Funciones de Botones (Reutilizaremos algunas) ---
+    // --- Funciones de Botones ---
 
-    // Esta función la usan AMBOS paneles (Game Over y Level Complete)
     public void OnRetryButton()
     {
         Time.timeScale = 1f;
-        
-        // Ocultamos ambos paneles
-        gameOverPanel.SetActive(false);
-        levelCompletePanel.SetActive(false); // --- NUEVO ---
-
-        // Restablecemos los valores
-        currentPlayerHealth = maxPlayerHealth;
-        currentScore = 0;
-        if (kiroHealthSlider != null)
-        {
-            currentKiroHealth = maxKiroHealth;
-            kiroHealthSlider.value = maxKiroHealth;
-        }
-        healthSlider.value = currentPlayerHealth;
-        scoreText.text = "Monedas: 0";
-        
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
+        currentScore = 0; 
+        SceneManager.LoadScene(gameLevelSceneNames[currentLevelIndex]); 
     }
 
-    // --- NUEVO: Función para el botón "Siguiente Nivel" ---
     public void OnNextLevelButton()
     {
-        Time.timeScale = 1f; // Quita la pausa
-        levelCompletePanel.SetActive(false); // Oculta el panel
+        Time.timeScale = 1f;
+        int nextIndex = currentLevelIndex + 1;
 
-        // ¡Importante! El GameManager persistente cargará el Nivel_2
-        // y su función Start() se ejecutará, re-habilitando el input
-        // y reseteando los valores (si así lo decides).
-        // Por ahora, solo cargamos la escena.
-        SceneManager.LoadScene(nextLevelName);
+        if (nextIndex < gameLevelSceneNames.Length)
+        {
+            SceneManager.LoadScene(gameLevelSceneNames[nextIndex]);
+        }
+        else
+        {
+            Debug.Log("¡HAS GANADO EL JUEGO! Regresando al menú...");
+            QuitToMainMenu();
+        }
     }
 
-    // Esta función la usan AMBOS paneles
     public void QuitToMainMenu()
     {
         Time.timeScale = 1f;
@@ -148,40 +187,33 @@ public class GameManager : MonoBehaviour
         Destroy(gameObject);
         SceneManager.LoadScene(mainMenuSceneName);
     }
-
+    
     // --- El resto de tus funciones ---
-    // (TakePlayerDamage, AddScore, PlayerDie, KiroDies, HealKiro...)
-    // No necesitan cambios.
     
     public void TakePlayerDamage(int damage)
     {
         currentPlayerHealth -= damage;
         if (currentPlayerHealth < 0) { currentPlayerHealth = 0; }
-        healthSlider.value = currentPlayerHealth;
+        
+        // Esta es la línea importante para la barra de vida de Aiden
+        if(healthSlider != null) 
+        {
+            healthSlider.value = currentPlayerHealth;
+        }
+        
         if (currentPlayerHealth <= 0) { PlayerDie(); }
     }
+
     public void AddScore(int points)
     {
         currentScore += points;
-        scoreText.text = "Monedas: " + currentScore;
+        if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
     }
+
     void PlayerDie()
     {
-        if (playerInput != null) { playerInput.DeactivateInput(); } // Desactiva el input al morir
-        gameOverPanel.SetActive(true);
+        if (playerInput != null) { playerInput.DeactivateInput(); }
+        if(gameOverPanel != null) gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
-    }
-    void KiroDies()
-    {
-        Debug.Log("¡Kiro ha muerto! Game Over.");
-        if (playerInput != null) { playerInput.DeactivateInput(); } // Desactiva el input
-        gameOverPanel.SetActive(true); 
-        Time.timeScale = 0f;
-    }
-    public void HealKiro(float healAmount)
-    {
-        currentKiroHealth += healAmount;
-        if (currentKiroHealth > maxKiroHealth) { currentKiroHealth = maxKiroHealth; }
-        kiroHealthSlider.value = currentKiroHealth;
     }
 }
