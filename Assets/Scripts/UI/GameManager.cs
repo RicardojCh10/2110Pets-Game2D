@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem; // --- NUEVO: Para controlar el PlayerInput
 
 public class GameManager : MonoBehaviour
 {
@@ -9,116 +10,178 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("Referencias de la UI")]
-    public GameObject hudCanvas; // El Canvas completo
+    public GameObject hudCanvas;
     public Slider healthSlider;
     public TextMeshProUGUI scoreText;
-    public GameObject gameOverPanel; // El panel que está desactivado
+    public GameObject gameOverPanel;
+    public Slider kiroHealthSlider;
+    public GameObject levelCompletePanel; // --- NUEVO ---
+
+    [Header("Referencias del Jugador")]
+    public PlayerInput playerInput; // --- NUEVO: Arrastra el componente "Player Input" de Aiden aquí
 
     [Header("Variables del Jugador")]
     public int maxPlayerHealth = 100;
     private int currentPlayerHealth;
     private int currentScore = 0;
 
+    [Header("Variables de Kiro")]
+    public float maxKiroHealth = 60f;
+    public float healthDrainPerSecond = 1f;
+    private float currentKiroHealth;
+
+    // --- NUEVO: Nombres de Escenas (¡Asegúrate de que coincidan!) ---
+    [Header("Configuración de Nivel")]
+    public string nextLevelName = "Nivel_2";
+    public string mainMenuSceneName = "MainMenu";
+
+
     private void Awake()
     {
-        // Configuración del Singleton
+        // ... (Tu código de Awake no cambia) ...
         if (Instance == null)
         {
             Instance = this;
-            // Hacemos que el GameManager sea persistente
             DontDestroyOnLoad(gameObject); 
-            // Hacemos que TODO el Canvas de UI sea persistente
             DontDestroyOnLoad(hudCanvas); 
         }
         else
         {
-            // Si ya existe uno (de una escena anterior), destruye este nuevo
             Destroy(gameObject);
-            Destroy(hudCanvas); // También destruye el canvas duplicado
+            Destroy(hudCanvas);
         }
     }
 
     void Start()
     {
-        // Inicializamos los valores al empezar el juego
+        // --- NUEVO: Habilitar el input al inicio ---
+        if (playerInput != null)
+        {
+            playerInput.ActivateInput();
+        }
+        Time.timeScale = 1f; // Nos aseguramos de que el juego no esté pausado
+
+        // ... (El resto de tu código de Start no cambia) ...
         currentPlayerHealth = maxPlayerHealth;
-        
         healthSlider.maxValue = maxPlayerHealth;
         healthSlider.value = currentPlayerHealth;
         scoreText.text = "Monedas: 0";
-
-        // Nos aseguramos de que el panel de Game Over esté apagado
         gameOverPanel.SetActive(false); 
-    }
+        levelCompletePanel.SetActive(false); // --- NUEVO: Asegurarse de que esté apagado
 
-    // --- Funciones Públicas ---
-
-    public void TakePlayerDamage(int damage)
-    {
-        currentPlayerHealth -= damage;
-        if (currentPlayerHealth < 0)
+        if (kiroHealthSlider != null)
         {
-            currentPlayerHealth = 0;
-        }
-
-        healthSlider.value = currentPlayerHealth; // Actualiza la barra de vida
-
-        if (currentPlayerHealth <= 0)
-        {
-            PlayerDie();
+            currentKiroHealth = maxKiroHealth;
+            kiroHealthSlider.maxValue = maxKiroHealth;
+            kiroHealthSlider.value = currentKiroHealth;
         }
     }
 
-    public void AddScore(int points)
+    void Update()
     {
-        currentScore += points;
-        scoreText.text = "Monedas: " + currentScore; // Actualiza el texto
+        // ... (Tu código de Update para Kiro no cambia) ...
+        if (kiroHealthSlider != null && currentKiroHealth > 0)
+        {
+            currentKiroHealth -= healthDrainPerSecond * Time.deltaTime;
+            kiroHealthSlider.value = currentKiroHealth; 
+            if (currentKiroHealth <= 0)
+            {
+                KiroDies();
+            }
+        }
     }
 
-    void PlayerDie()
+    // --- NUEVO: Función principal para Nivel Completado ---
+    public void CompleteLevel()
     {
-        gameOverPanel.SetActive(true); // Muestra la pantalla de Game Over
+        if (playerInput != null)
+        {
+            playerInput.DeactivateInput(); // Desactiva el control del jugador
+        }
         Time.timeScale = 0f; // Pausa el juego
+        levelCompletePanel.SetActive(true); // Muestra el panel de victoria
     }
 
-    // Esta función la llamará el botón "RetryButton"
+    // --- Funciones de Botones (Reutilizaremos algunas) ---
+
+    // Esta función la usan AMBOS paneles (Game Over y Level Complete)
     public void OnRetryButton()
     {
-        // 1. Reanuda el juego
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
         
-        // 2. Apaga el panel de Game Over
-        gameOverPanel.SetActive(false); 
+        // Ocultamos ambos paneles
+        gameOverPanel.SetActive(false);
+        levelCompletePanel.SetActive(false); // --- NUEVO ---
 
-        // 3. Restablece todos los valores del juego a su estado inicial
+        // Restablecemos los valores
         currentPlayerHealth = maxPlayerHealth;
         currentScore = 0;
-        
-        // Asumiendo que Kiro también debe revivir
-        // if (kiroHealthSlider != null) // (Comprobación por si acaso)
-        // {
-        //     currentKiroHealth = maxKiroHealth;
-        //     kiroHealthSlider.value = maxKiroHealth;
-        // }
-
-        // 4. Actualiza la UI para que muestre los valores nuevos
+        if (kiroHealthSlider != null)
+        {
+            currentKiroHealth = maxKiroHealth;
+            kiroHealthSlider.value = maxKiroHealth;
+        }
         healthSlider.value = currentPlayerHealth;
         scoreText.text = "Monedas: 0";
         
-        // 5. Vuelve a cargar la escena
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
     }
 
+    // --- NUEVO: Función para el botón "Siguiente Nivel" ---
+    public void OnNextLevelButton()
+    {
+        Time.timeScale = 1f; // Quita la pausa
+        levelCompletePanel.SetActive(false); // Oculta el panel
+
+        // ¡Importante! El GameManager persistente cargará el Nivel_2
+        // y su función Start() se ejecutará, re-habilitando el input
+        // y reseteando los valores (si así lo decides).
+        // Por ahora, solo cargamos la escena.
+        SceneManager.LoadScene(nextLevelName);
+    }
+
+    // Esta función la usan AMBOS paneles
     public void QuitToMainMenu()
-{
-    // 1. Reanudamos el juego
-    Time.timeScale = 1f;
+    {
+        Time.timeScale = 1f;
+        Destroy(hudCanvas);
+        Destroy(gameObject);
+        SceneManager.LoadScene(mainMenuSceneName);
+    }
 
-    // 2. Destruimos los objetos persistentes para que no viajen al menú
-    Destroy(hudCanvas);       // Destruye el Canvas de la UI
-    Destroy(gameObject);    // Destruye este objeto (_GameManager)
-
-    // 3. Cargamos la escena del Menú Principal
-    SceneManager.LoadScene("MainMenu");
-}
+    // --- El resto de tus funciones ---
+    // (TakePlayerDamage, AddScore, PlayerDie, KiroDies, HealKiro...)
+    // No necesitan cambios.
+    
+    public void TakePlayerDamage(int damage)
+    {
+        currentPlayerHealth -= damage;
+        if (currentPlayerHealth < 0) { currentPlayerHealth = 0; }
+        healthSlider.value = currentPlayerHealth;
+        if (currentPlayerHealth <= 0) { PlayerDie(); }
+    }
+    public void AddScore(int points)
+    {
+        currentScore += points;
+        scoreText.text = "Monedas: " + currentScore;
+    }
+    void PlayerDie()
+    {
+        if (playerInput != null) { playerInput.DeactivateInput(); } // Desactiva el input al morir
+        gameOverPanel.SetActive(true);
+        Time.timeScale = 0f;
+    }
+    void KiroDies()
+    {
+        Debug.Log("¡Kiro ha muerto! Game Over.");
+        if (playerInput != null) { playerInput.DeactivateInput(); } // Desactiva el input
+        gameOverPanel.SetActive(true); 
+        Time.timeScale = 0f;
+    }
+    public void HealKiro(float healAmount)
+    {
+        currentKiroHealth += healAmount;
+        if (currentKiroHealth > maxKiroHealth) { currentKiroHealth = maxKiroHealth; }
+        kiroHealthSlider.value = currentKiroHealth;
+    }
 }

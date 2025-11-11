@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Piso
   - Enemy
+  - BG
   layers:
   - Default
   - TransparentFX
@@ -45,6 +46,15 @@ TagManager:
     locked: 0
   - name: enemy
     uniqueID: 2253249405
+    locked: 0
+  - name: backgroud
+    uniqueID: 969087813
+    locked: 0
+  - name: 'piso '
+    uniqueID: 1633645711
+    locked: 0
+  - name: player
+    uniqueID: 4234486317
     locked: 0
   m_RenderingLayers:
   - Default
