@@ -83,7 +83,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Si se SUELTA la tecla (para el salto corto)
-        if (context.canceled && rb.linearVelocity.y > 0)
+        if (context.canceled && rb.linearVelocity.y > 0) 
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * shortJumpCutoff);
         }
@@ -133,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
         // 2. Control de Movimiento
         if (!isCrouching || !isGrounded)
         {
-            rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);   // Cambiar este por adforce en lugar de linearVelocity si quieres aceleracion
         }
     }
 
