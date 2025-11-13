@@ -31,14 +31,14 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
         isDead = false;
 
-        // --- NUEVO: Obtener componentes de IA ---
+        // Obtener componentes de IA ---
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        // Importante: Asegúrate de que tu Rigidbody2D sea "Kinematic"
-        rb.isKinematic = true; 
 
-        // --- NUEVO: Encontrar al jugador (Aiden) ---
-        // ¡¡Asegúrate de que tu objeto Aiden tenga el Tag "Player"!!
+        // rb.gravityScale = 0;
+        rb.freezeRotation = true; 
+        
+        // Encontrar al jugador (Aiden)
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
@@ -73,52 +73,55 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // --- NUEVO: Update para la IA ---
-    void Update()
+    // Update para la IA 
+   void FixedUpdate()
     {
-        // Si el enemigo está muerto o no encuentra al jugador, no hace nada
         if (isDead || playerTarget == null)
         {
+            rb.linearVelocity = Vector2.zero; // Detente si estás muerto
             return;
         }
 
-        // 1. Calcular distancia y dirección
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
+        float directionToPlayer = playerTarget.position.x - transform.position.x;
 
         if (distanceToPlayer > attackRange)
         {
             // --- 2. Perseguir al Jugador ---
-            // Moverse hacia la posición del jugador
-            Vector2 targetPosition = new Vector2(playerTarget.position.x, transform.position.y); // Solo se mueve en X
-            transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            // Moverse usando la velocidad del Rigidbody
+            rb.linearVelocity = new Vector2(Mathf.Sign(directionToPlayer) * moveSpeed, rb.linearVelocity.y);
             
-            // Voltear el sprite para que mire al jugador
-            FlipSprite(playerTarget.position.x - transform.position.x);
+            // Voltear el sprite
+            FlipSprite(directionToPlayer);
         }
         else
         {
             // --- 3. Atacar al Jugador ---
-            // Si estamos en rango y el cooldown ha pasado
+            rb.linearVelocity = Vector2.zero; // Detente para atacar
+            FlipSprite(directionToPlayer); // Asegúrate de estar mirando al jugador
+
             if (Time.time >= nextAttackTime)
             {
                 Attack();
-                nextAttackTime = Time.time + attackCooldown; // Reinicia el cooldown
+                nextAttackTime = Time.time + attackCooldown;
             }
         }
     }
 
-    // --- NUEVO: Función para voltear el sprite ---
+    //  Función para voltear el sprite 
     void FlipSprite(float direction)
     {
         if (direction > 0)
         {
-            spriteRenderer.flipX = false; // Mirando a la derecha
+            spriteRenderer.flipX = true; // Mirando a la derecha
         }
         else if (direction < 0)
         {
-            spriteRenderer.flipX = true; // Mirando a la izquierda
+            spriteRenderer.flipX = false; // Mirando a la izquierda
         }
     }
+
+    
 
     // --- NUEVO: Función de Ataque ---
     void Attack()
