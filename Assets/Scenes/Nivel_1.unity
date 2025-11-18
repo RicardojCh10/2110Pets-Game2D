@@ -3989,9 +3989,9 @@ MonoBehaviour:
   - {fileID: 1525932428}
   - {fileID: 937616623}
   - {fileID: 427982079}
-  enemiesPerWave: 4
+  enemiesPerWave: 3
   timeBetweenWaves: 5
-  timeBetweenSpawns: 0.5
+  timeBetweenSpawns: 1
 --- !u!4 &104127955
 Transform:
   m_ObjectHideFlags: 0
@@ -4743,7 +4743,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.459984, y: -1.7278557, z: -10.085631}
+  m_LocalPosition: {x: -14.937119, y: -1.7278557, z: -10.085631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

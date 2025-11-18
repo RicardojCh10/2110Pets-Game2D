@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4469238586111757921}
   - component: {fileID: 963097824620789260}
   - component: {fileID: 8758160691736412137}
+  - component: {fileID: 2650609529747090077}
   m_Layer: 0
   m_Name: Bandido_Prefab
   m_TagString: Enemy
@@ -175,3 +176,25 @@ MonoBehaviour:
   attackRange: 1
   attackDamage: 15
   attackCooldown: 2
+--- !u!95 &2650609529747090077
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4011742403218838216}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c633637dfe3ffe646ae689c68628ecc0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
