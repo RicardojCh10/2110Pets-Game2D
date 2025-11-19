@@ -4,29 +4,46 @@ public class Bullet : MonoBehaviour
 {
     public float speed = 20f;
     public int damage = 25;
-    public float lifeTime = 2f; // Tiempo antes de autodestruirse
+    public float lifeTime = 2f;
 
     void Start()
     {
-        // Le da velocidad hacia la derecha (local) de donde fue disparada
+        // Usamos linearVelocity (correcto para Unity 6)
         GetComponent<Rigidbody2D>().linearVelocity = transform.right * speed;
-        // Se destruye después de 'lifeTime' segundos
         Destroy(gameObject, lifeTime);
     }
 
-    // Se activa cuando toca un Trigger
     private void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // Intenta encontrar el script "Enemy" en lo que sea que golpeó
-        Enemy enemy = hitInfo.GetComponent<Enemy>();
-        if (enemy != null)
+        // 1. ¿Es un Zombie o Bandido? (Script "Enemy")
+        Enemy zombie = hitInfo.GetComponent<Enemy>();
+        if (zombie != null)
         {
-            enemy.TakeDamage(damage); // Le hace daño
+            zombie.TakeDamage(damage);
+            Destroy(gameObject); // Importante: destruir y salir para no seguir comprobando
+            return; 
         }
 
-        // Destruye la bala al chocar con CUALQUIER COSA
-        // (Excepto otros triggers que no sean enemigos, para eso usaríamos Layers,
-        // pero por ahora esto funciona)
+        // 2. ¿Es un Robot Militar? (Script "RobotEnemy")
+        RobotEnemy robot = hitInfo.GetComponent<RobotEnemy>();
+        if (robot != null)
+        {
+            robot.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
+
+        // 3. ¿Es un Robot Volador? (Script "FlyingEnemy")
+        FlyingEnemy drone = hitInfo.GetComponent<FlyingEnemy>();
+        if (drone != null)
+        {
+            drone.TakeDamage(damage);
+            Destroy(gameObject);
+            return;
+        }
+
+        // Si llegamos aquí, es que chocó con algo que no es un enemigo (pared, suelo, etc.)
+        // Asegúrate de configurar las capas (Layers) para que no choque con triggers invisibles
         Destroy(gameObject);
     }
 }
