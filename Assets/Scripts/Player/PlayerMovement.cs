@@ -80,6 +80,12 @@ public class PlayerMovement : MonoBehaviour
         if (context.performed && isGrounded && !isCrouching)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+            if (animator != null)
+            {
+                animator.SetBool("IsJumping", true);
+                animator.SetBool("Walking", false);
+            }
         }
 
         // Si se SUELTA la tecla (para el salto corto)
@@ -116,8 +122,35 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
         
         HandleSpriteFlip();
+if (animator != null)
+        {
+            if (isGrounded)
+            {
+                // Si está en el suelo, desactiva cualquier animación aérea.
+                animator.SetBool("IsJumping", false);
+                animator.SetBool("IsFalling", false);
+                
+                // Vuelve a comprobar si camina si está en el suelo (ya lo tienes en OnMove, pero es más seguro aquí)
+                bool isWalking = Mathf.Abs(moveInputX) > 0.1f;
+                animator.SetBool("Walking", isWalking);
+            }
+            else // Si está en el aire
+            {
+                // Si la velocidad vertical es positiva, está subiendo.
+                if (rb.linearVelocity.y > 0.01f)
+                {
+                    animator.SetBool("IsJumping", true);
+                    animator.SetBool("IsFalling", false);
+                }
+                // Si la velocidad vertical es negativa, está cayendo.
+                else if (rb.linearVelocity.y < -0.01f)
+                {
+                    animator.SetBool("IsJumping", false);
+                    animator.SetBool("IsFalling", true);
+                }
+            }
+        }
     }
-
     private void FixedUpdate()
     {
         // 1. Control de Gravedad
