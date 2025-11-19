@@ -7,6 +7,7 @@ TagManager:
   - Piso
   - Enemy
   - BG
+  - Kiro
   layers:
   - Default
   - TransparentFX
@@ -14,12 +15,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Kiro
   - GroundCheck
   - PlayerBullets
   - CameraBoundary
   - Player
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -55,6 +56,9 @@ TagManager:
     locked: 0
   - name: player
     uniqueID: 4234486317
+    locked: 0
+  - name: Kiro
+    uniqueID: 830563109
     locked: 0
   m_RenderingLayers:
   - Default

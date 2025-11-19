@@ -5,7 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     // --- Referencias de Movimiento ---
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
+    public float moveSpeed = 6f;
     public float jumpForce = 10f;
 
     // --- Configuración de Gravedad ---

@@ -106,7 +106,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 10
+  m_Mass: 20
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 5
@@ -172,10 +172,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 100
   healthBarPrefab: {fileID: 4410358435842739067, guid: 845908a939a81b7469ba287debb46925, type: 3}
-  moveSpeed: 5
+  moveSpeed: 3
   attackRange: 1
-  attackDamage: 15
-  attackCooldown: 2
+  attackDamage: 10
+  attackCooldown: 1
 --- !u!95 &2650609529747090077
 Animator:
   serializedVersion: 7

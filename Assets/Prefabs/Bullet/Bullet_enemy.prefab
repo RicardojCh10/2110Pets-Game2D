@@ -179,5 +179,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet
   speed: 7
-  damage: 10
+  damage: 5
   lifeTime: 4
