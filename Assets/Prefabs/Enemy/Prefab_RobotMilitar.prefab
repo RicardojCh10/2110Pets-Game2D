@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6130246059371008609}
   - component: {fileID: 8398634887295348866}
   - component: {fileID: 8917767898268291335}
+  - component: {fileID: -6607147315223308960}
   m_Layer: 0
   m_Name: Prefab_RobotMilitar
   m_TagString: Enemy
@@ -177,6 +178,28 @@ MonoBehaviour:
   fireRate: 1.5
   bulletPrefab: {fileID: 3052770706362859317, guid: 2386eb1f10df5b0438bad83e398ce449, type: 3}
   firePoint: {fileID: 1586853255800324826}
+--- !u!95 &-6607147315223308960
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148556154022178981}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 94d52b8fd829e7e448220c626059d33a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1234844116420179059
 GameObject:
   m_ObjectHideFlags: 0

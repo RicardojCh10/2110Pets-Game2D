@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1574987118429197941}
   - component: {fileID: 6258753239203585953}
   - component: {fileID: 4973746644850601746}
+  - component: {fileID: -4991098283993164999}
   m_Layer: 0
   m_Name: Prefab_RobotVolador
   m_TagString: Enemy
@@ -178,6 +179,28 @@ MonoBehaviour:
   fireRate: 2
   bulletPrefab: {fileID: 1503783403565700036, guid: 237d48bc2af4c8e48a5788c6b79a88e9, type: 3}
   firePoint: {fileID: 7344806971709036662}
+--- !u!95 &-4991098283993164999
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7753450448618132171}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2f8683f0469d2ec41a7109331c2346f0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8457730253481634689
 GameObject:
   m_ObjectHideFlags: 0
