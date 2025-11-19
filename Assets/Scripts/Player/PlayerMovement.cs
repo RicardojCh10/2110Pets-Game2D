@@ -128,7 +128,6 @@ if (animator != null)
             {
                 // Si está en el suelo, desactiva cualquier animación aérea.
                 animator.SetBool("IsJumping", false);
-                animator.SetBool("IsFalling", false);
                 
                 // Vuelve a comprobar si camina si está en el suelo (ya lo tienes en OnMove, pero es más seguro aquí)
                 bool isWalking = Mathf.Abs(moveInputX) > 0.1f;
@@ -140,13 +139,11 @@ if (animator != null)
                 if (rb.linearVelocity.y > 0.01f)
                 {
                     animator.SetBool("IsJumping", true);
-                    animator.SetBool("IsFalling", false);
                 }
                 // Si la velocidad vertical es negativa, está cayendo.
                 else if (rb.linearVelocity.y < -0.01f)
                 {
                     animator.SetBool("IsJumping", false);
-                    animator.SetBool("IsFalling", true);
                 }
             }
         }

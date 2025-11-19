@@ -25,17 +25,28 @@ public class EnemyBullet : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
+{
+    // Si choca con el Jugador (Aiden)
+    if (collision.CompareTag("Player"))
     {
-        // Si choca con el Jugador (Aiden)
-        if (collision.CompareTag("Player"))
+        // 1. OBTENER el componente PlayerHealth de Aiden
+        PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
+
+        if (playerHealth != null)
         {
+            // 2. APLICAR daño
             GameManager.Instance.TakePlayerDamage(damage);
-            Destroy(gameObject); // La bala explota
+            
+            // 3. ACTIVAR el efecto visual llamando a la Coroutine de Aiden
+            playerHealth.StartCoroutine("DamageEffect"); // Usamos StartCoroutine con string
         }
-        // Si choca con el Suelo (Layer "Ground" o Tag "Ground")
-        else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
-        {
-            Destroy(gameObject); // La bala choca con la pared/piso
-        }
+        
+        Destroy(gameObject); // La bala explota
     }
+    // Si choca con el Suelo (Layer "Ground" o Tag "Ground")
+    else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+    {
+        Destroy(gameObject); // La bala choca con la pared/piso
+    }
+}
 }

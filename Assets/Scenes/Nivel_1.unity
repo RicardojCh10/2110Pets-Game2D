@@ -6601,7 +6601,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &1354350601
 CapsuleCollider2D:
@@ -6665,7 +6665,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6859,6 +6859,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   damageFromEnemy: 10
+  flashDuration: 0.1
+  flashColor: {r: 1, g: 0, b: 0, a: 1}
+  shakeMagnitude: 0.1
+  shakeDuration: 0.2
 --- !u!95 &1354350608
 Animator:
   serializedVersion: 7
