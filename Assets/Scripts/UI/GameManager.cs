@@ -63,6 +63,9 @@ public class GameManager : MonoBehaviour
     {
         if (scene.name == mainMenuSceneName) return; // Si es el menú, no hagas nada
 
+        PlayerPrefs.SetString("SavedLevel", scene.name);
+        PlayerPrefs.Save();
+
         // Sincroniza el índice del nivel actual
         bool foundLevel = false;
         for (int i = 0; i < gameLevelSceneNames.Length; i++)
@@ -115,19 +118,8 @@ public class GameManager : MonoBehaviour
         if(levelCompletePanel != null) levelCompletePanel.SetActive(false);
     }
 
-    // --- Update() ahora está vacío, puedes incluso borrar la función si quieres ---
-    void Update()
-    {
-        // (La lógica de Kiro se ha eliminado)
-    }
+    
 
-    // --- Función para Nivel Completado ---
-    // public void CompleteLevel()
-    // {
-    //     if (playerInput != null) playerInput.DeactivateInput();
-    //     Time.timeScale = 0f;
-    //     if(levelCompletePanel != null) levelCompletePanel.SetActive(true);
-    // }
     public void CompleteLevel()
     {
         // 1. Desactivar control

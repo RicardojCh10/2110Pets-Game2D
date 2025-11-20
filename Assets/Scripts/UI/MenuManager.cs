@@ -1,31 +1,39 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // ¡¡MUY IMPORTANTE!!
+using UnityEngine.SceneManagement; 
 
 public class MenuManager : MonoBehaviour
 {
-    // Esta variable la pones en el Inspector.
-    // Escribe el nombre exacto de tu primera escena de juego (ej. "Nivel_1")
+    [Header("Configuración de Escenas")]
+    public string tutorialSceneName = "Tutorial"; // La escena de historia
     public string firstLevelSceneName = "Nivel_1";
 
-    // Esta función la llamará el botón "Nueva Partida"
+    // --- NUEVA PARTIDA ---
     public void OnNewGameButton()
     {
         // Carga la primera escena del juego
-        SceneManager.LoadScene(firstLevelSceneName);
-    }
+        PlayerPrefs.DeleteAll(); 
+        
+        SceneManager.LoadScene(tutorialSceneName);    }
 
-    // Esta función la llamará el botón "Continuar"
+    // --- CONTINUAR PARTIDA ---
     public void OnContinueButton()
     {
-        // (Por ahora, la dejaremos simple. Más adelante, aquí irá la lógica
-        // para cargar datos guardados)
-        Debug.Log("Cargando partida guardada... (lógica no implementada)");
-        // Si tienes guardado el nivel, lo cargarías aquí.
-        // Por ahora, solo iniciaremos el primer nivel.
-        SceneManager.LoadScene(firstLevelSceneName);
+        // Verificamos si hay un nivel guardado
+        if (PlayerPrefs.HasKey("SavedLevel"))
+        {
+            string levelToLoad = PlayerPrefs.GetString("SavedLevel");
+            Debug.Log("Cargando nivel guardado: " + levelToLoad);
+            SceneManager.LoadScene(levelToLoad);
+        }
+        else
+        {
+            Debug.Log("No hay partida guardada. Iniciando nueva.");
+            // Si no hay nada guardado, inicia desde el principio (o tutorial)
+            SceneManager.LoadScene(tutorialSceneName);
+        }
     }
 
-    // Esta función la llamará el botón "Salir"
+    // --- SALIR DEL JUEGO ---
     public void OnQuitButton()
     {
         Debug.Log("Saliendo del juego...");
