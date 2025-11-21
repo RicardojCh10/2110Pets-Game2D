@@ -17,7 +17,12 @@ public class PlayerHealth : MonoBehaviour
     [Header("Invulnerabilidad y Parpadeo")]
     public float invulnerabilityTime = 1.5f; 
     public float blinkInterval = 0.1f;       
-    private bool isInvulnerable = false;     
+    private bool isInvulnerable = false;    
+
+    // Variables de Audio para Daño
+    public AudioSource audioSource; 
+    public AudioClip damageSound;  
+    
     
     // --- REFERENCIAS ---
     private SpriteRenderer spriteRenderer; 
@@ -35,6 +40,16 @@ public class PlayerHealth : MonoBehaviour
         {
             originalColor = spriteRenderer.color; 
         }
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    // Metodo para reproducir el sonido de daño
+    void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     // --- Detección de Colisión Cuerpo a Cuerpo ---
@@ -47,6 +62,9 @@ public class PlayerHealth : MonoBehaviour
         {
             Debug.Log("¡El jugador tocó un enemigo!");
             GameManager.Instance.TakePlayerDamage(damageFromEnemy);
+
+            // Reproducir el sonido de daño
+            PlaySound(damageSound);
 
             // Iniciar o reiniciar la Secuencia Principal de Daño
             InitiateDamageSequence();
@@ -63,6 +81,9 @@ public class PlayerHealth : MonoBehaviour
         {
             Debug.Log("¡Aiden fue golpeado por una bala!");
             GameManager.Instance.TakePlayerDamage(damageFromEnemy);
+
+            // Reproducir el sonido de daño
+            PlaySound(damageSound);
             
             // Iniciar o reiniciar la Secuencia Principal de Daño
             InitiateDamageSequence();
