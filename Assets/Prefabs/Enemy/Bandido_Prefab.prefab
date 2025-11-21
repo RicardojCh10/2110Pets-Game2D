@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 963097824620789260}
   - component: {fileID: 8758160691736412137}
   - component: {fileID: 2650609529747090077}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Bandido_Prefab
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -172,6 +172,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   maxHealth: 100
   healthBarPrefab: {fileID: 4410358435842739067, guid: 845908a939a81b7469ba287debb46925, type: 3}
+  coinPrefab: {fileID: 4319608793057138945, guid: 42b2ace610e6b4b418b9a66c229acf2d, type: 3}
+  healthPackPrefab: {fileID: 3353528009674183693, guid: ed6f0b06d122fe54c8060dec9eec68b4, type: 3}
+  dropChance: 95
+  healthPackChance: 26
   moveSpeed: 3
   attackRange: 1
   attackDamage: 10

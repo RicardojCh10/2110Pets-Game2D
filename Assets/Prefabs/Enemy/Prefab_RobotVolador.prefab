@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6258753239203585953}
   - component: {fileID: 4973746644850601746}
   - component: {fileID: -4991098283993164999}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Prefab_RobotVolador
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -210,7 +210,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7344806971709036662}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
