@@ -12,6 +12,12 @@ public class FlyingEnemy : MonoBehaviour
     private EnemyHealthBar healthBar;
     private static Transform canvasTransform;
 
+    [Header("Botín (Loot)")]
+    public GameObject coinPrefab;
+    public GameObject healthPackPrefab;
+    [Range(0, 100)] public int dropChance = 80; // 50% de probabilidad de soltar algo
+    [Range(0, 100)] public int healthPackChance = 30;
+
     [Header("IA de Vuelo")]
     public float flySpeed = 3.5f;
     public float attackRange = 7f; // Distancia para empezar a disparar
@@ -116,7 +122,36 @@ public class FlyingEnemy : MonoBehaviour
         // Al morir, activamos la gravedad para que caiga al suelo dramáticamente
         rb.gravityScale = 2f; 
         rb.linearVelocity = Vector2.zero; // Frenar impulso lateral
+        DropLoot(); 
+
         StartCoroutine(FadeOutAndDestroy());
+    }
+
+
+    // --- Lógica de Botín (Loot) ---
+    void DropLoot()
+    {
+        // 1. ¿Tengo suerte? (Tira un dado de 0 a 100)
+        int randomValue = Random.Range(0, 100);
+
+        if (randomValue <= dropChance) // Si sacaste menos de 50 (ganaste)
+        {
+            // 2. ¿Qué premio me toca?
+            int lootType = Random.Range(0, 100);
+
+            if (lootType <= healthPackChance)
+            {
+                // Premio Mayor: Botiquín
+                if (healthPackPrefab != null)
+                    Instantiate(healthPackPrefab, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                // Premio Normal: Moneda
+                if (coinPrefab != null)
+                    Instantiate(coinPrefab, transform.position, Quaternion.identity);
+            }
+        }
     }
 
     IEnumerator FadeOutAndDestroy()

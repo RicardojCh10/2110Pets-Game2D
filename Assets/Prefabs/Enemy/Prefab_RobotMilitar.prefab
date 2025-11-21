@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8398634887295348866}
   - component: {fileID: 8917767898268291335}
   - component: {fileID: -6607147315223308960}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Prefab_RobotMilitar
   m_TagString: Enemy
   m_Icon: {fileID: 0}

@@ -12,13 +12,14 @@ public class GameManager : MonoBehaviour
     [Header("Referencias de la UI")]
     public GameObject hudCanvas;
     public Slider healthSlider; // <-- La barra de vida de Aiden
+    public GameObject scoreContainer; 
     public TextMeshProUGUI scoreText;
     public GameObject gameOverPanel;
     public GameObject levelCompletePanel;
     public TextMeshProUGUI levelCompleteText; //  Referencia al texto
 
     [Header("Referencias del Jugador")]
-    public PlayerInput playerInput; // Lo encontraremos automáticamente
+    public PlayerInput playerInput;
 
     [Header("Variables del Jugador")]
     public int maxPlayerHealth = 100;
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
 
     // --- MODIFICADO: Lista de niveles ---
     [Header("Configuración de Nivel")]
-    public string[] gameLevelSceneNames; // La lista de tus niveles
+    public string[] gameLevelSceneNames;
     public string mainMenuSceneName = "MainMenu";
     private int currentLevelIndex = 0;
 
@@ -61,7 +62,7 @@ public class GameManager : MonoBehaviour
     // --- Se llama CADA VEZ que se carga una escena ---
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == mainMenuSceneName) return; // Si es el menú, no hagas nada
+        if (scene.name == mainMenuSceneName) return; 
 
         PlayerPrefs.SetString("SavedLevel", scene.name);
         PlayerPrefs.Save();
@@ -87,7 +88,7 @@ public class GameManager : MonoBehaviour
     // Lógica de reinicio para CADA nivel
     void SetupNewLevel()
     {
-        // 1. Encontrar al nuevo jugador (¡NECESITA EL TAG "Player"!)
+        // 1. Encontrar al nuevo jugador
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
@@ -106,11 +107,11 @@ public class GameManager : MonoBehaviour
         currentPlayerHealth = maxPlayerHealth;
         if(healthSlider != null) 
         {
-            healthSlider.maxValue = maxPlayerHealth; // <-- Asegúrate de poner el MaxValue
+            healthSlider.maxValue = maxPlayerHealth; 
             healthSlider.value = maxPlayerHealth;
         }
 
-        // 4. Actualizar puntaje (NO lo reiniciamos, se mantiene)
+        // 4. Actualizar puntaje en la UI
         if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
 
         // 5. Ocultar paneles
@@ -179,29 +180,53 @@ public class GameManager : MonoBehaviour
         Destroy(gameObject);
         SceneManager.LoadScene(mainMenuSceneName);
     }
-    
-    // --- El resto de tus funciones ---
-    
+
     public void TakePlayerDamage(int damage)
     {
         currentPlayerHealth -= damage;
         if (currentPlayerHealth < 0) { currentPlayerHealth = 0; }
         
-        // Esta es la línea importante para la barra de vida de Aiden
         if(healthSlider != null) 
         {
             healthSlider.value = currentPlayerHealth;
+        }
+        else
+        {
+            // Opcional: Intentar reconectar si se perdió
+            Debug.LogWarning("GameManager: No se encontró el HealthSlider para actualizar la vida.");
         }
         
         if (currentPlayerHealth <= 0) { PlayerDie(); }
     }
 
+
+
+    // --- Curar al Jugador ---
+    public void HealPlayer(int amount)
+    {
+        currentPlayerHealth += amount;
+        
+        // No dejes que la vida supere el máximo
+        if (currentPlayerHealth > maxPlayerHealth)
+        {
+            currentPlayerHealth = maxPlayerHealth;
+        }
+
+        // Actualizar la barra de vida visualmente
+        if(healthSlider != null) 
+        {
+            healthSlider.value = currentPlayerHealth;
+        }
+    }
+
+    // ---  Añadir Puntaje ---
     public void AddScore(int points)
     {
         currentScore += points;
         if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
     }
 
+    // --- Manejar la muerte del jugador ---
     void PlayerDie()
     {
         if (playerInput != null) { playerInput.DeactivateInput(); }
