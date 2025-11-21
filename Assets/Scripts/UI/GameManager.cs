@@ -26,11 +26,16 @@ public class GameManager : MonoBehaviour
     private int currentPlayerHealth;
     private int currentScore = 0; // El puntaje se mantiene entre niveles
 
-    // --- MODIFICADO: Lista de niveles ---
+    // --- Lista de niveles ---
     [Header("Configuración de Nivel")]
     public string[] gameLevelSceneNames;
     public string mainMenuSceneName = "MainMenu";
     private int currentLevelIndex = 0;
+
+    // Variables de Audio
+    [Header("Audio del Jugador")]
+    public AudioClip playerDeathSound; 
+    private AudioSource aidenAudioSource; 
 
 
     private void Awake()
@@ -82,6 +87,16 @@ public class GameManager : MonoBehaviour
         if (foundLevel)
         {
             SetupNewLevel();
+        }
+
+        // Configurar la fuente de audio de Aiden
+        if (scene.name != mainMenuSceneName)
+        {
+            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            if (playerObject != null)
+            {
+                aidenAudioSource = playerObject.GetComponent<AudioSource>();
+            }
         }
     }
 
@@ -229,6 +244,12 @@ public class GameManager : MonoBehaviour
     // --- Manejar la muerte del jugador ---
     void PlayerDie()
     {
+        // Reproducir sonido de muerte
+        if (aidenAudioSource != null && playerDeathSound != null)
+        {
+            aidenAudioSource.PlayOneShot(playerDeathSound);
+        }
+
         if (playerInput != null) { playerInput.DeactivateInput(); }
         if(gameOverPanel != null) gameOverPanel.SetActive(true);
         Time.timeScale = 0f;
