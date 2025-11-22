@@ -36,7 +36,12 @@ public class GameManager : MonoBehaviour
     [Header("Audio del Jugador")]
     public AudioClip playerDeathSound; 
     private AudioSource aidenAudioSource; 
-
+    
+    [Header("Audio de Música de Nivel")]
+    public AudioSource musicSource;         
+    public AudioClip level1Music;           
+    public AudioClip level2Music;         
+    public AudioClip level3Music;      
 
     private void Awake()
     {
@@ -45,6 +50,12 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); 
             DontDestroyOnLoad(hudCanvas); 
+            // Buscar el AudioSource para la música al inicio
+            musicSource = GetComponent<AudioSource>();
+            if (musicSource == null)
+            {
+                Debug.LogError("GameManager requiere un AudioSource para la música de fondo.");
+            }
         }
         else
         {
@@ -87,6 +98,10 @@ public class GameManager : MonoBehaviour
         if (foundLevel)
         {
             SetupNewLevel();
+
+            // Configurar música de fondo según el nivel
+            ManageBackgroundMusic(scene.name);
+
         }
 
         // Configurar la fuente de audio de Aiden
@@ -97,6 +112,32 @@ public class GameManager : MonoBehaviour
             {
                 aidenAudioSource = playerObject.GetComponent<AudioSource>();
             }
+        }
+    }
+
+        void ManageBackgroundMusic(string sceneName)
+    {
+        AudioClip clipToPlay = null;
+
+        if (sceneName == gameLevelSceneNames[0]) // Nivel 1
+        {
+            clipToPlay = level1Music;
+        }
+        else if (sceneName == gameLevelSceneNames[1]) // Nivel 2
+        {
+            clipToPlay = level2Music;
+        }
+        else if (sceneName == gameLevelSceneNames[2]) // Nivel 3
+        {
+            clipToPlay = level3Music;
+        }
+
+        // Solo cambiar y reproducir si el clip es diferente al actual
+        if (musicSource != null && clipToPlay != null && musicSource.clip != clipToPlay)
+        {
+            musicSource.clip = clipToPlay;
+            musicSource.loop = true; // Aseguramos que la música de nivel se repita
+            musicSource.Play();
         }
     }
 

@@ -32,6 +32,9 @@ public class Enemy : MonoBehaviour
     private float nextAttackTime = 0f; // Para el cooldown del ataque
     private bool isDead = false; // Para evitar que ataque después de muerto
 
+    [Header("Audio")]
+    public AudioSource audioSource; 
+    public AudioClip deathSound;    
     void Start()
     {
         currentHealth = maxHealth;
@@ -40,6 +43,9 @@ public class Enemy : MonoBehaviour
         // Obtener componentes de IA ---
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Obtener AudioSource
+        audioSource = GetComponent<AudioSource>();
 
         // rb.gravityScale = 0;
         rb.freezeRotation = true; 
@@ -158,6 +164,11 @@ public class Enemy : MonoBehaviour
     void Die()
     {
         isDead = true; //  Marca al enemigo como muerto
+
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
 
         GetComponent<Collider2D>().enabled = false;
         if (rb != null) rb.linearVelocity = Vector2.zero; 
