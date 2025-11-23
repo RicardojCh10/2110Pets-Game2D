@@ -120,7 +120,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &7587565696510506819
 CapsuleCollider2D:
@@ -178,7 +178,7 @@ MonoBehaviour:
   dropChance: 50
   healthPackChance: 20
   moveSpeed: 4
-  attackRange: 1.5
+  attackRange: 0.4
   attackDamage: 15
   attackCooldown: 2
   audioSource: {fileID: -1339060165188483763}
