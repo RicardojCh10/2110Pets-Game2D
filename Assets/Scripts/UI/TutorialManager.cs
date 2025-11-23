@@ -55,7 +55,7 @@ public class TutorialManager : MonoBehaviour
         }
         else
         {
-            nextButtonText.text = "Siguiente >>";
+            nextButtonText.text = "Siguiente";
         }
     }
 
