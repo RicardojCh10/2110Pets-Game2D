@@ -7,6 +7,21 @@ public class MenuManager : MonoBehaviour
     public string tutorialSceneName = "Tutorial"; // La escena de historia
     public string firstLevelSceneName = "Nivel_1";
 
+    // Variables de Audio
+    [Header("Audio del Menú")]
+    public AudioSource audioSource;
+    public AudioClip menuMusic;
+
+    private void Start()
+    {
+        // Buscar el AudioSource para la música al inicio
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            Debug.LogError("MenuManager requiere un AudioSource para la música de fondo.");
+        }
+    }
+
     // --- NUEVA PARTIDA ---
     public void OnNewGameButton()
     {

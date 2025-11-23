@@ -18,6 +18,10 @@ public class FlyingEnemy : MonoBehaviour
     [Range(0, 100)] public int dropChance = 80; // 50% de probabilidad de soltar algo
     [Range(0, 100)] public int healthPackChance = 30;
 
+    [Header("Audio")]
+    public AudioSource audioSource; 
+    public AudioClip deathSound;   
+
     [Header("IA de Vuelo")]
     public float flySpeed = 3.5f;
     public float attackRange = 7f; // Distancia para empezar a disparar
@@ -39,6 +43,9 @@ public class FlyingEnemy : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Obtener AudioSource
+        audioSource = GetComponent<AudioSource>();
 
         // --- CONFIGURACIÓN CLAVE PARA VOLAR ---
         rb.gravityScale = 0f;   // ¡CERO GRAVEDAD PARA QUE VUELE!
@@ -118,6 +125,12 @@ public class FlyingEnemy : MonoBehaviour
     void Die()
     {
         isDead = true;
+
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
+        
         GetComponent<Collider2D>().enabled = false;
         // Al morir, activamos la gravedad para que caiga al suelo dramáticamente
         rb.gravityScale = 2f; 

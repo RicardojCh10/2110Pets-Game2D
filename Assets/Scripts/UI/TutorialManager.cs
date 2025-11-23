@@ -16,6 +16,11 @@ public class TutorialManager : MonoBehaviour
     public Button nextButton;
     public TextMeshProUGUI nextButtonText; // Para cambiar "Siguiente" a "Jugar"
 
+    // Variables de Audio
+    [Header("Audio del Tutorial")]
+    public AudioSource audioSource;
+    public AudioClip tutorialMusic;
+
     private int currentIndex = 0;
     public string firstLevelName = "Nivel_1"; // El nombre de tu primer nivel
 
@@ -25,6 +30,13 @@ public class TutorialManager : MonoBehaviour
         
         // Conectar botón "Siguiente"
         nextButton.onClick.AddListener(NextSlide);
+
+        // obtener el AudioSource para la música al inicio
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)    
+        {
+            Debug.LogError("TutorialManager requiere un AudioSource para la música de fondo.");
+        }
     }
 
     void UpdateUI()

@@ -18,6 +18,11 @@ public class RobotEnemy : MonoBehaviour
     [Range(0, 100)] public int dropChance = 80; // 50% de probabilidad de soltar algo
     [Range(0, 100)] public int healthPackChance = 30;
 
+    [Header("Audio")]
+    public AudioSource audioSource; 
+    public AudioClip deathSound;  
+
+
 
     [Header("IA de Combate")]
     public float moveSpeed = 2f; // Más lento y pesado
@@ -39,6 +44,9 @@ public class RobotEnemy : MonoBehaviour
 
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        // Obtener AudioSource
+        audioSource = GetComponent<AudioSource>();
 
         // Configuración física para robot terrestre
         rb.gravityScale = 3f;   // Pesado
@@ -121,6 +129,12 @@ public class RobotEnemy : MonoBehaviour
     void Die()
     {
         isDead = true;
+
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
+
         GetComponent<Collider2D>().enabled = false;
         rb.linearVelocity = Vector2.zero;
         DropLoot(); 
