@@ -61,7 +61,7 @@ public class PlayerHealth : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             Debug.Log("¡El jugador tocó un enemigo!");
-            GameManager.Instance.TakePlayerDamage(damageFromEnemy);
+            // GameManager.Instance.TakePlayerDamage(damageFromEnemy);
 
             // Reproducir el sonido de daño
             PlaySound(damageSound);
@@ -80,8 +80,7 @@ public class PlayerHealth : MonoBehaviour
         if (other.gameObject.CompareTag("EnemyBullet"))
         {
             Debug.Log("¡Aiden fue golpeado por una bala!");
-            GameManager.Instance.TakePlayerDamage(damageFromEnemy);
-
+            ReceiveDamage(damageFromEnemy); // Llama al método centralizado
             // Reproducir el sonido de daño
             PlaySound(damageSound);
             
@@ -213,4 +212,21 @@ public class PlayerHealth : MonoBehaviour
             yield return new WaitForSeconds(blinkInterval);
         }
     }
+
+public void ReceiveDamage(int damageAmount)
+{
+    // Si ya estamos invulnerables, ignoramos el golpe
+    if (isInvulnerable) return; 
+    
+    // 1. Aplicar daño (a través del GameManager)
+    GameManager.Instance.TakePlayerDamage(damageAmount);
+
+    // 2. Reproducir el sonido de daño
+    PlaySound(damageSound);
+
+    // 3. Iniciar la Secuencia Principal de Daño (Invulnerabilidad y efectos)
+    InitiateDamageSequence();
 }
+
+}
+

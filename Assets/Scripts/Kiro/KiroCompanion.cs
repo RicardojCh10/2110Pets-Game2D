@@ -105,13 +105,11 @@ public class KiroCompanion : MonoBehaviour
         if (distance > stopDistance)
         {
             rb.linearVelocity = new Vector2(Mathf.Sign(directionX) * actualSpeed, rb.linearVelocity.y);
-            if(animator != null) animator.SetBool("IsWalking", true);
             if (Mathf.Abs(directionX) > 0.1f) FlipSprite(directionX);
         }
         else
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
-            if(animator != null) animator.SetBool("IsWalking", false);
         }
 
         // --- Salto Inteligente ---
@@ -119,7 +117,6 @@ public class KiroCompanion : MonoBehaviour
         if (distanceY > jumpCheckOffset && isGrounded && rb.linearVelocity.y <= 0.1f)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            if(animator != null) animator.SetTrigger("Jump");
         }
     }
 
