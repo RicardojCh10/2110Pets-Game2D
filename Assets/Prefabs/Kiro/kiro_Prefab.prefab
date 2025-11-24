@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2748490084010873151}
   - component: {fileID: 2340827152290725043}
   - component: {fileID: 1013171128295757330}
+  - component: {fileID: 5692612766809198448}
   m_Layer: 6
   m_Name: kiro_Prefab
   m_TagString: Kiro
@@ -186,6 +187,28 @@ CapsuleCollider2D:
   m_Offset: {x: 0.022033691, y: -0.102818966}
   m_Size: {x: 0.89714813, y: 0.89714813}
   m_Direction: 0
+--- !u!95 &5692612766809198448
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 317546250318983793}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 67ef28331ce112e48b20842fdd2ef16d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3220444574555923782
 GameObject:
   m_ObjectHideFlags: 0
