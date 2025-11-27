@@ -30692,7 +30692,7 @@ Transform:
   m_GameObject: {fileID: 1090815347}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.2790833, y: -0.8554678, z: -10.085631}
+  m_LocalPosition: {x: -2.6506195, y: -0.8554678, z: -10.085631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -30950,7 +30950,7 @@ MonoBehaviour:
   fallGravityScale: 6
   shortJumpCutoff: 0.5
   crouchingColliderSize: {x: 0.6, y: 0.6}
-  crouchingColliderOffset: {x: -0.08, y: -0.235}
+  crouchingColliderOffset: {x: -0.08, y: -0.09}
   groundCheck: {fileID: 259568077}
   groundLayer:
     serializedVersion: 2
