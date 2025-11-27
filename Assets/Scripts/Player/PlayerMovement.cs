@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnCrouch(InputAction.CallbackContext context)
+public void OnCrouch(InputAction.CallbackContext context)
     {
         // Si se PRESIONA la tecla
         if (context.performed)
@@ -103,14 +103,31 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = true;
             capsuleCollider.size = crouchingColliderSize;
             capsuleCollider.offset = crouchingColliderOffset;
+
+            // ¡NUEVO! Activa la animación de agacharse
+            if (animator != null)
+            {
+                animator.SetBool("IsCrouching", true);
+                // También es buena práctica asegurar que Walking se detenga
+                animator.SetBool("Walking", false); 
+            }
         }
 
         // Si se SUELTA la tecla
         if (context.canceled)
         {
+            // Antes de levantarse, puedes añadir una lógica de comprobación
+            // para ver si no hay un techo sobre el jugador, pero por ahora solo se levanta:
+            
             isCrouching = false;
             capsuleCollider.size = standingColliderSize;
             capsuleCollider.offset = standingColliderOffset;
+
+            // ¡NUEVO! Desactiva la animación de agacharse
+            if (animator != null)
+            {
+                animator.SetBool("IsCrouching", false);
+            }
         }
     }
 
@@ -130,7 +147,7 @@ if (animator != null)
                 animator.SetBool("IsJumping", false);
                 
                 // Vuelve a comprobar si camina si está en el suelo (ya lo tienes en OnMove, pero es más seguro aquí)
-                bool isWalking = Mathf.Abs(moveInputX) > 0.1f;
+                bool isWalking = Mathf.Abs(moveInputX) > 0.1f && !isCrouching;
                 animator.SetBool("Walking", isWalking);
             }
             else // Si está en el aire
@@ -160,10 +177,16 @@ if (animator != null)
             rb.gravityScale = baseGravityScale;
         }
 
-        // 2. Control de Movimiento
-        if (!isCrouching || !isGrounded)
+    // 2. Control de Movimiento
+        if (!isCrouching) // El personaje solo se mueve si NO está agachado.
         {
-            rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);   // Cambiar este por adforce en lugar de linearVelocity si quieres aceleracion
+            // Aplicamos el movimiento horizontal
+            rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);
+        }
+        else // Si está agachado (isCrouching == true)
+        {
+            // Forzamos la detención horizontal.
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         }
     }
 
