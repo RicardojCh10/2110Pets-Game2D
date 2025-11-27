@@ -3,42 +3,43 @@ using System.Collections.Generic;
 
 public class AidenMovementRecorder : MonoBehaviour
 {
-    // Tiempo de retraso que Kiro tendrá (ej. 0.25 segundos)
     public float delayTime = 0.25f; 
     
-    // Almacena un historial de posiciones
     private List<Vector3> positionHistory = new List<Vector3>(); 
-    
-    // Número de frames que necesitamos para el retraso
+    private List<float> velocityYHistory = new List<float>(); // NUEVO: Para velocidad Y
     private int historyLength;
+    private Rigidbody2D rb; // Para acceder a la velocidad
 
     void Start()
     {
-        // Calcular cuántos frames a FixedUpdate rate se necesitan
         historyLength = Mathf.RoundToInt(delayTime / Time.fixedDeltaTime);
+        rb = GetComponent<Rigidbody2D>(); // OBTENER EL RB
     }
 
     void FixedUpdate()
     {
-        // 1. Guardar la posición actual
-        // Insert(0, ...) pone el nuevo elemento al principio de la lista.
+        // 1. Guardar la posición y la velocidad Y
         positionHistory.Insert(0, transform.position);
+        velocityYHistory.Insert(0, rb.linearVelocity.y); // GRABAR VELOCIDAD Y
         
-        // 2. Limitar la longitud del historial
+        // 2. Limitar la longitud
         if (positionHistory.Count > historyLength)
         {
             positionHistory.RemoveAt(positionHistory.Count - 1);
+            velocityYHistory.RemoveAt(velocityYHistory.Count - 1);
         }
     }
 
-    // Función pública para que Kiro acceda a la posición grabada con retraso
     public Vector3 GetDelayedPosition()
     {
-        // Si no hay suficiente historial (ej. al inicio), devuelve la posición actual.
-        if (positionHistory.Count < historyLength)
-            return transform.position;
-            
-        // Devuelve la posición de hace 'historyLength' frames.
+        if (positionHistory.Count < historyLength) return transform.position;
         return positionHistory[historyLength - 1];
+    }
+
+    // NUEVO: Función para que Kiro acceda a la velocidad vertical retrasada
+    public float GetDelayedVelocityY()
+    {
+        if (velocityYHistory.Count < historyLength) return 0f;
+        return velocityYHistory[historyLength - 1];
     }
 }

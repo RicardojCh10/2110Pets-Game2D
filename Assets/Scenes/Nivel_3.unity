@@ -30176,6 +30176,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2340827152290725043, guid: 63c86cb57cff8274f87be626b649b849, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 1198901713}
+    - target: {fileID: 2340827152290725043, guid: 63c86cb57cff8274f87be626b649b849, type: 3}
+      propertyPath: aidenRecorder
+      value: 
+      objectReference: {fileID: 1198901715}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -30867,6 +30875,7 @@ GameObject:
   - component: {fileID: 1198901706}
   - component: {fileID: 1198901705}
   - component: {fileID: 1198901714}
+  - component: {fileID: 1198901715}
   m_Layer: 10
   m_Name: Aiden
   m_TagString: Player
@@ -31285,6 +31294,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1198901715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1198901704}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91afcfcfe6417e347bac341c4410e53e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AidenMovementRecorder
+  delayTime: 0.25
 --- !u!1 &1211371024
 GameObject:
   m_ObjectHideFlags: 0
