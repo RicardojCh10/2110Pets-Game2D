@@ -729,8 +729,16 @@ PrefabInstance:
       value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 2340827152290725043, guid: 63c86cb57cff8274f87be626b649b849, type: 3}
+      propertyPath: aidenRecorder
+      value: 
+      objectReference: {fileID: 1641284939}
+    - target: {fileID: 2340827152290725043, guid: 63c86cb57cff8274f87be626b649b849, type: 3}
       propertyPath: teleportDistance
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2748490084010873151, guid: 63c86cb57cff8274f87be626b649b849, type: 3}
+      propertyPath: m_GravityScale
+      value: 1.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9708,6 +9716,7 @@ GameObject:
   - component: {fileID: 1641284930}
   - component: {fileID: 1641284929}
   - component: {fileID: 1641284938}
+  - component: {fileID: 1641284939}
   m_Layer: 10
   m_Name: Aiden
   m_TagString: Player
@@ -10126,6 +10135,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1641284939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641284928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91afcfcfe6417e347bac341c4410e53e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AidenMovementRecorder
+  delayTime: 0.25
 --- !u!1 &1698318040
 GameObject:
   m_ObjectHideFlags: 0
