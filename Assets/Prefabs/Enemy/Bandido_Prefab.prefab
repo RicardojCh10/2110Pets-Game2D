@@ -171,6 +171,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61eb12464e0f0e4eb18c1a0cc73d731, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  raycastHeightOffset: 0.05
+  raycastLength: 0.1
+  pushForce: 2000
   maxHealth: 100
   healthBarPrefab: {fileID: 4410358435842739067, guid: 845908a939a81b7469ba287debb46925, type: 3}
   coinPrefab: {fileID: 4319608793057138945, guid: 42b2ace610e6b4b418b9a66c229acf2d, type: 3}
@@ -181,8 +187,6 @@ MonoBehaviour:
   attackRange: 0.4
   attackDamage: 10
   attackCooldown: 1
-  audioSource: {fileID: 9144543917792451517}
-  deathSound: {fileID: 8300000, guid: 661b77bff6d20e346ba5e40ebef8ab4e, type: 3}
 --- !u!95 &2650609529747090077
 Animator:
   serializedVersion: 7

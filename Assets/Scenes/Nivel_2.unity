@@ -4657,7 +4657,7 @@ Transform:
   m_GameObject: {fileID: 743057241}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.6530075, y: -3.7603939, z: -10.085631}
+  m_LocalPosition: {x: -4.772682, y: -3.7603939, z: -10.085631}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9733,6 +9733,7 @@ GameObject:
   - component: {fileID: 1641284930}
   - component: {fileID: 1641284929}
   - component: {fileID: 1641284938}
+  - component: {fileID: 1641284939}
   m_Layer: 10
   m_Name: Aiden
   m_TagString: Player
@@ -9816,11 +9817,17 @@ MonoBehaviour:
   fallGravityScale: 6
   shortJumpCutoff: 0.5
   crouchingColliderSize: {x: 0.6, y: 0.6}
-  crouchingColliderOffset: {x: -0.08, y: -0.235}
+  crouchingColliderOffset: {x: -0.08, y: -0.09}
   groundCheck: {fileID: 957978099}
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
+  cornerLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  raycastHorizontalOffset: 0.4
+  verticalRaycastHeight: 0.5
+  pushAmount: 0.2
 --- !u!114 &1641284933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10151,6 +10158,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1641284939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641284928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91afcfcfe6417e347bac341c4410e53e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AidenMovementRecorder
+  delayTime: 0.25
 --- !u!1 &1698318040
 GameObject:
   m_ObjectHideFlags: 0

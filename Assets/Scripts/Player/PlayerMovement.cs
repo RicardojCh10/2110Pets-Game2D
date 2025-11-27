@@ -24,6 +24,12 @@ public class PlayerMovement : MonoBehaviour
     public Transform groundCheck;
     public LayerMask groundLayer;
 
+    [Header("Corner Snagging Fix")]
+    public LayerMask cornerLayer;     
+    public float raycastHorizontalOffset = 0.4f; 
+
+    public float verticalRaycastHeight = 0.5f;    
+    public float pushAmount = 0.2f;    
     // --- Componentes ---
     private Rigidbody2D rb;
     private CapsuleCollider2D capsuleCollider;
@@ -95,7 +101,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    public void OnCrouch(InputAction.CallbackContext context)
+public void OnCrouch(InputAction.CallbackContext context)
     {
         // Si se PRESIONA la tecla
         if (context.performed)
@@ -103,14 +109,31 @@ public class PlayerMovement : MonoBehaviour
             isCrouching = true;
             capsuleCollider.size = crouchingColliderSize;
             capsuleCollider.offset = crouchingColliderOffset;
+
+            // ¡NUEVO! Activa la animación de agacharse
+            if (animator != null)
+            {
+                animator.SetBool("IsCrouching", true);
+                // También es buena práctica asegurar que Walking se detenga
+                animator.SetBool("Walking", false); 
+            }
         }
 
         // Si se SUELTA la tecla
         if (context.canceled)
         {
+            // Antes de levantarse, puedes añadir una lógica de comprobación
+            // para ver si no hay un techo sobre el jugador, pero por ahora solo se levanta:
+            
             isCrouching = false;
             capsuleCollider.size = standingColliderSize;
             capsuleCollider.offset = standingColliderOffset;
+
+            // ¡NUEVO! Desactiva la animación de agacharse
+            if (animator != null)
+            {
+                animator.SetBool("IsCrouching", false);
+            }
         }
     }
 
@@ -130,7 +153,7 @@ if (animator != null)
                 animator.SetBool("IsJumping", false);
                 
                 // Vuelve a comprobar si camina si está en el suelo (ya lo tienes en OnMove, pero es más seguro aquí)
-                bool isWalking = Mathf.Abs(moveInputX) > 0.1f;
+                bool isWalking = Mathf.Abs(moveInputX) > 0.1f && !isCrouching;
                 animator.SetBool("Walking", isWalking);
             }
             else // Si está en el aire
@@ -148,6 +171,8 @@ if (animator != null)
             }
         }
     }
+ // PlayerMovement.cs
+
     private void FixedUpdate()
     {
         // 1. Control de Gravedad
@@ -161,12 +186,49 @@ if (animator != null)
         }
 
         // 2. Control de Movimiento
-        if (!isCrouching || !isGrounded)
-        {
-            rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);   // Cambiar este por adforce en lugar de linearVelocity si quieres aceleracion
-        }
+ if (!isCrouching || !isGrounded) // Si NO está agachado O NO está en el suelo
+    {
+        // Si no está agachado, o si está en el aire (y puede moverse)
+        rb.linearVelocity = new Vector2(moveInputX * moveSpeed, rb.linearVelocity.y);
     }
+    else // Si SÍ está agachado Y SÍ está en el suelo
+    {
+        // Detener el movimiento horizontal al agacharse en el suelo
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+    }
+        
+// 3. Lógica Anti-Enganche en Esquinas (Basada en la imagen)
+    
+    // Raycast Izquierda
+    RaycastHit2D raycastHitIzquierda = Physics2D.Raycast(
+        (Vector2)transform.position + new Vector2(-raycastHorizontalOffset, verticalRaycastHeight), 
+        Vector2.up, // Dirección: Arriba
+        0.05f, // Longitud: Un valor muy pequeño para solo chequear la esquina
+        cornerLayer
+    );
 
+    // Raycast Derecha
+    RaycastHit2D raycastHitDerecha = Physics2D.Raycast(
+        (Vector2)transform.position + new Vector2(raycastHorizontalOffset, verticalRaycastHeight), 
+        Vector2.up, // Dirección: Arriba
+        0.05f, // Longitud
+        cornerLayer
+    );
+
+    // Si está tocando el raycast izquierdo pero no el derecho (moviéndose a la izquierda o detenido)
+    if (raycastHitIzquierda && !raycastHitDerecha)
+    {
+        // Empujar ligeramente a la derecha
+        transform.position += new Vector3(pushAmount, 0f, 0f);
+    }
+    
+    // Si está tocando el raycast derecho pero no el izquierdo (moviéndose a la derecha o detenido)
+    else if (raycastHitDerecha && !raycastHitIzquierda)
+    {
+        // Empujar ligeramente a la izquierda
+        transform.position -= new Vector3(pushAmount, 0f, 0f);
+    }
+}
     private void HandleSpriteFlip()
     {
         // Voltear el sprite
