@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Datos del Nivel Actual")]
-    public LevelData levelData; // <--- ¡ScriptableObject!
+    public LevelData levelData; 
 
     [Header("Puntos de Aparición (Esto sí es físico de la escena)")]
     public Transform[] spawnPoints;
@@ -13,7 +13,6 @@ public class EnemySpawner : MonoBehaviour
 
     void Start()
     {
-        // Validación de seguridad
         if (levelData == null)
         {
             Debug.LogError("¡Falta asignar el LevelData en el Spawner!");
@@ -28,10 +27,8 @@ public class EnemySpawner : MonoBehaviour
         {
             enemiesSpawned = 0;
 
-            // Leemos los datos desde el ScriptableObject (levelData)
             for (int i = 0; i < levelData.enemiesPerWave; i++)
             {
-                // Usamos la lista del ScriptableObject
                 GameObject enemyToSpawn = levelData.enemyPrefabs[Random.Range(0, levelData.enemyPrefabs.Length)];
                 
                 Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];

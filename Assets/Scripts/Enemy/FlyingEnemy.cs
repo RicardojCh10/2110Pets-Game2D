@@ -4,7 +4,7 @@ using System.Collections;
 public class FlyingEnemy : MonoBehaviour
 {
     [Header("Estadísticas de Salud")]
-    public int maxHealth = 40; // Más débil que el terrestre
+    public int maxHealth = 40; 
     private int currentHealth;
 
     [Header("Referencias de UI")]
@@ -15,7 +15,7 @@ public class FlyingEnemy : MonoBehaviour
     [Header("Botín (Loot)")]
     public GameObject coinPrefab;
     public GameObject healthPackPrefab;
-    [Range(0, 100)] public int dropChance = 80; // 50% de probabilidad de soltar algo
+    [Range(0, 100)] public int dropChance = 80; 
     [Range(0, 100)] public int healthPackChance = 30;
 
     [Header("Audio")]
@@ -24,8 +24,8 @@ public class FlyingEnemy : MonoBehaviour
 
     [Header("IA de Vuelo")]
     public float flySpeed = 3.5f;
-    public float attackRange = 7f; // Distancia para empezar a disparar
-    public float stopDistance = 4f; // Distancia mínima (para no chocar con Aiden)
+    public float attackRange = 7f; 
+    public float stopDistance = 4f; 
     public float fireRate = 2f;
     public GameObject bulletPrefab;
     public Transform firePoint;
@@ -44,13 +44,10 @@ public class FlyingEnemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Obtener AudioSource
         audioSource = GetComponent<AudioSource>();
 
-        // --- CONFIGURACIÓN CLAVE PARA VOLAR ---
-        rb.gravityScale = 0f;   // ¡CERO GRAVEDAD PARA QUE VUELE!
+        rb.gravityScale = 0f;   
         rb.freezeRotation = true;
-        // Recomendado: Aumentar el "Linear Drag" en el Inspector a 1 o 2 para que frene suave
 
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null) playerTarget = playerObject.transform;
@@ -69,22 +66,17 @@ public class FlyingEnemy : MonoBehaviour
         float distance = Vector2.Distance(transform.position, playerTarget.position);
         Vector2 directionVector = (playerTarget.position - transform.position).normalized;
 
-        // 1. Voltear Sprite (solo basado en X)
         FlipSprite(directionVector.x);
 
-        // 2. IA de Vuelo
         if (distance > stopDistance)
         {
-            // Se mueve hacia el jugador en línea recta (X e Y)
             rb.linearVelocity = directionVector * flySpeed;
         }
         else
         {
-            // Se detiene/frena suavemente
             rb.linearVelocity = Vector2.Lerp(rb.linearVelocity, Vector2.zero, Time.deltaTime * 2f);
         }
 
-        // 3. IA de Disparo
         if (distance <= attackRange && Time.time >= nextFireTime)
         {
             Shoot();
@@ -96,7 +88,6 @@ public class FlyingEnemy : MonoBehaviour
     {
         if (firePoint != null && bulletPrefab != null)
         {
-            // Apunta la bala directo a Aiden
             Vector2 direction = (playerTarget.position - firePoint.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0, 0, angle);
@@ -111,8 +102,6 @@ public class FlyingEnemy : MonoBehaviour
         else if (dirX < 0) spriteRenderer.flipX = false;
     }
 
-    // --- Funciones Compartidas (Daño, Muerte, UI) ---
-    // (Mismas funciones que el robot terrestre)
     
     public void TakeDamage(int damage)
     {
@@ -132,35 +121,29 @@ public class FlyingEnemy : MonoBehaviour
         }
         
         GetComponent<Collider2D>().enabled = false;
-        // Al morir, activamos la gravedad para que caiga al suelo dramáticamente
         rb.gravityScale = 2f; 
-        rb.linearVelocity = Vector2.zero; // Frenar impulso lateral
+        rb.linearVelocity = Vector2.zero; 
         DropLoot(); 
 
         StartCoroutine(FadeOutAndDestroy());
     }
 
 
-    // --- Lógica de Botín (Loot) ---
     void DropLoot()
     {
-        // 1. ¿Tengo suerte? (Tira un dado de 0 a 100)
         int randomValue = Random.Range(0, 100);
 
-        if (randomValue <= dropChance) // Si sacaste menos de 50 (ganaste)
+        if (randomValue <= dropChance)
         {
-            // 2. ¿Qué premio me toca?
             int lootType = Random.Range(0, 100);
 
             if (lootType <= healthPackChance)
             {
-                // Premio Mayor: Botiquín
                 if (healthPackPrefab != null)
                     Instantiate(healthPackPrefab, transform.position, Quaternion.identity);
             }
             else
             {
-                // Premio Normal: Moneda
                 if (coinPrefab != null)
                     Instantiate(coinPrefab, transform.position, Quaternion.identity);
             }
@@ -172,7 +155,6 @@ public class FlyingEnemy : MonoBehaviour
         float fadeDuration = 0.5f;
         float timer = 0f;
         Color originalColor = spriteRenderer.color;
-        // Esperamos un poco antes de desvanecer para que se vea caer
         yield return new WaitForSeconds(0.5f); 
         
         while (timer < fadeDuration)
@@ -187,7 +169,6 @@ public class FlyingEnemy : MonoBehaviour
 
     void SetupHealthBar()
     {
-        // ... (Mismo código de SetupHealthBar del Robot Terrestre) ...
          if (canvasTransform == null)
         {
             GameObject canvasObject = GameObject.Find("Canvas");

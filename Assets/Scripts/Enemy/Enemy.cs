@@ -15,22 +15,20 @@ public class Enemy : MonoBehaviour
     [Header("Botín (Loot)")]
     public GameObject coinPrefab;
     public GameObject healthPackPrefab;
-    [Range(0, 100)] public int dropChance = 50; // 50% de probabilidad de soltar algo
+    [Range(0, 100)] public int dropChance = 50; 
     [Range(0, 100)] public int healthPackChance = 20;
 
-    // Estadísticas de IA
     [Header("Estadísticas de IA")]
-    public float moveSpeed = 3f; // Qué tan rápido se mueve
-    public float attackRange = 1.5f; // Qué tan cerca debe estar para atacar
-    public int attackDamage = 10; // Cuánto daño hace
-    public float attackCooldown = 2f; // Tiempo (en seg) entre ataques
+    public float moveSpeed = 3f; 
+    public float attackRange = 1.5f;
+    public int attackDamage = 10; 
+    public float attackCooldown = 2f; 
 
-    //  Referencias de IA ---
-    private Transform playerTarget; // El transform de Aiden
+    private Transform playerTarget; 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
-    private float nextAttackTime = 0f; // Para el cooldown del ataque
-    private bool isDead = false; // Para evitar que ataque después de muerto
+    private float nextAttackTime = 0f;
+    private bool isDead = false; 
 
     [Header("Audio")]
     public AudioSource audioSource; 
@@ -40,17 +38,13 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
         isDead = false;
 
-        // Obtener componentes de IA ---
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Obtener AudioSource
         audioSource = GetComponent<AudioSource>();
 
-        // rb.gravityScale = 0;
         rb.freezeRotation = true; 
         
-        // Encontrar al jugador (Aiden)
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
@@ -61,7 +55,6 @@ public class Enemy : MonoBehaviour
             Debug.LogError("¡No se encontró al jugador! Asegúrate de que Aiden tenga el Tag 'Player'.");
         }
 
-        // --- Lógica del Canvas  ---
         if (canvasTransform == null)
         {
             GameObject canvasObject = GameObject.Find("Canvas");
@@ -85,12 +78,11 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Update para la IA 
    void FixedUpdate()
     {
         if (isDead || playerTarget == null)
         {
-            rb.linearVelocity = Vector2.zero; // Detente si estás muerto
+            rb.linearVelocity = Vector2.zero; 
             return;
         }
 
@@ -99,18 +91,15 @@ public class Enemy : MonoBehaviour
 
         if (distanceToPlayer > attackRange)
         {
-            // --- 2. Perseguir al Jugador ---
-            // Moverse usando la velocidad del Rigidbody
+
             rb.linearVelocity = new Vector2(Mathf.Sign(directionToPlayer) * moveSpeed, rb.linearVelocity.y);
             
-            // Voltear el sprite
             FlipSprite(directionToPlayer);
         }
         else
         {
-            // --- 3. Atacar al Jugador ---
-            rb.linearVelocity = Vector2.zero; // Detente para atacar
-            FlipSprite(directionToPlayer); // Asegúrate de estar mirando al jugador
+            rb.linearVelocity = Vector2.zero; 
+            FlipSprite(directionToPlayer); 
 
             if (Time.time >= nextAttackTime)
             {
@@ -120,32 +109,27 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    //  Función para voltear el sprite 
     void FlipSprite(float direction)
     {
         if (direction > 0)
         {
-            spriteRenderer.flipX = true; // Mirando a la derecha
+            spriteRenderer.flipX = true; 
         }
         else if (direction < 0)
         {
-            spriteRenderer.flipX = false; // Mirando a la izquierda
+            spriteRenderer.flipX = false;
         }
     }
 
-    // Función de Ataque ---
     void Attack()
     {
         Debug.Log("¡Enemigo ataca!");
-        // Llama al GameManager para hacerle daño a Aiden
         GameManager.Instance.TakePlayerDamage(attackDamage);
-        // Aquí podrías activar una animación de ataque
     }
 
-    // --- Lógica de Daño ---
     public void TakeDamage(int damage)
     {
-        if (isDead) return; // No puede recibir daño si ya está muerto
+        if (isDead) return;
 
         currentHealth -= damage;
 
@@ -160,10 +144,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // --- Lógica de Muerte  ---
     void Die()
     {
-        isDead = true; //  Marca al enemigo como muerto
+        isDead = true; 
 
         if (audioSource != null && deathSound != null)
         {
@@ -178,33 +161,27 @@ public class Enemy : MonoBehaviour
         StartCoroutine(FadeOutAndDestroy());
     }
 
-    // --- Lógica de Botín (Loot) ---
     void DropLoot()
     {
-        // 1. ¿Tengo suerte? (Tira un dado de 0 a 100)
         int randomValue = Random.Range(0, 100);
 
-        if (randomValue <= dropChance) // Si sacaste menos de 50 (ganaste)
+        if (randomValue <= dropChance) 
         {
-            // 2. ¿Qué premio me toca?
             int lootType = Random.Range(0, 100);
 
             if (lootType <= healthPackChance)
             {
-                // Premio Mayor: Botiquín
                 if (healthPackPrefab != null)
                     Instantiate(healthPackPrefab, transform.position, Quaternion.identity);
             }
             else
             {
-                // Premio Normal: Moneda
                 if (coinPrefab != null)
                     Instantiate(coinPrefab, transform.position, Quaternion.identity);
             }
         }
     }
 
-    // --- Lógica de Desvanecimiento ---
     IEnumerator FadeOutAndDestroy()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
