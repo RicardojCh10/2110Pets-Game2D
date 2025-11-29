@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class ParallaxEffect : MonoBehaviour
 {
-    // Qué tan rápido debe moverse el fondo en relación a la cámara
     [Header("Velocidad de Parallax")]
-    [Range(0f, 1f)] // Restringe el valor entre 0 y 1
+    [Range(0f, 1f)]
     public float parallaxStrength = 0.5f; 
 
     private Transform cameraTransform;
@@ -12,9 +11,7 @@ public class ParallaxEffect : MonoBehaviour
 
     void Start()
     {
-        // Encuentra la cámara principal
         cameraTransform = Camera.main.transform;
-        // Guarda la posición inicial de la cámara
         lastCameraPosition = cameraTransform.position;
     }
 

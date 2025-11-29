@@ -4,7 +4,7 @@ using System.Collections;
 public class RobotEnemy : MonoBehaviour
 {
     [Header("Estadísticas de Salud")]
-    public int maxHealth = 150; // Más resistente que el zombie
+    public int maxHealth = 150;
     private int currentHealth;
 
     [Header("Referencias de UI")]
@@ -15,7 +15,7 @@ public class RobotEnemy : MonoBehaviour
       [Header("Botín (Loot)")]
     public GameObject coinPrefab;
     public GameObject healthPackPrefab;
-    [Range(0, 100)] public int dropChance = 80; // 50% de probabilidad de soltar algo
+    [Range(0, 100)] public int dropChance = 80;
     [Range(0, 100)] public int healthPackChance = 30;
 
     [Header("Audio")]
@@ -25,11 +25,11 @@ public class RobotEnemy : MonoBehaviour
 
 
     [Header("IA de Combate")]
-    public float moveSpeed = 2f; // Más lento y pesado
-    public float shootingRange = 6f; // Distancia para empezar a disparar
-    public float fireRate = 1.5f; // Tiempo entre disparos
-    public GameObject bulletPrefab; // ¡Arrastra el prefab de EnemyBullet aquí!
-    public Transform firePoint;     // El punto vacío en la punta del cañón
+    public float moveSpeed = 2f; 
+    public float shootingRange = 6f; 
+    public float fireRate = 1.5f;
+    public GameObject bulletPrefab; 
+    public Transform firePoint;     
 
     private Transform playerTarget;
     private Rigidbody2D rb;
@@ -45,18 +45,14 @@ public class RobotEnemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // Obtener AudioSource
         audioSource = GetComponent<AudioSource>();
 
-        // Configuración física para robot terrestre
-        rb.gravityScale = 3f;   // Pesado
+        rb.gravityScale = 3f;  
         rb.freezeRotation = true;
 
-        // Encontrar a Aiden
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null) playerTarget = playerObject.transform;
 
-        // Configuración del Canvas (Igual que tu script anterior)
         SetupHealthBar();
     }
 
@@ -64,27 +60,23 @@ public class RobotEnemy : MonoBehaviour
     {
         if (isDead || playerTarget == null)
         {
-            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); // Mantener gravedad pero frenar X
+            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y); 
             return;
         }
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
         float directionX = playerTarget.position.x - transform.position.x;
 
-        // 1. Voltear el Sprite siempre hacia el jugador
         FlipSprite(directionX);
 
-        // 2. IA de Movimiento
         if (distanceToPlayer > shootingRange)
         {
-            // ESTADO: PERSEGUIR
-            // Se mueve en X hacia el jugador, mantiene su velocidad Y (gravedad)
+        
             rb.linearVelocity = new Vector2(Mathf.Sign(directionX) * moveSpeed, rb.linearVelocity.y);
         }
         else
         {
-            // ESTADO: DISPARAR
-            // Se detiene en X para apuntar estable
+         
             rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
 
             if (Time.time >= nextFireTime)
@@ -99,7 +91,6 @@ public class RobotEnemy : MonoBehaviour
     {
         if (firePoint != null && bulletPrefab != null)
         {
-            // Calcular la rotación para apuntar a Aiden
             Vector2 direction = (playerTarget.position - firePoint.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             Quaternion rotation = Quaternion.Euler(0, 0, angle);
@@ -110,13 +101,10 @@ public class RobotEnemy : MonoBehaviour
 
     void FlipSprite(float direction)
     {
-        // Ajusta esto según hacia dónde mire tu sprite original
-        if (direction > 0) spriteRenderer.flipX = true;  // Mira derecha
-        else if (direction < 0) spriteRenderer.flipX = false; // Mira izquierda
+        if (direction > 0) spriteRenderer.flipX = true;  
+        else if (direction < 0) spriteRenderer.flipX = false; 
     }
 
-    // --- Funciones Compartidas (Daño y Muerte) ---
-    // (Son idénticas a tu script de Enemy.cs para mantener consistencia)
 
     public void TakeDamage(int damage)
     {
@@ -142,26 +130,21 @@ public class RobotEnemy : MonoBehaviour
         StartCoroutine(FadeOutAndDestroy());
     }
 
-     // --- Lógica de Botín (Loot) ---
     void DropLoot()
     {
-        // 1. ¿Tengo suerte? (Tira un dado de 0 a 100)
         int randomValue = Random.Range(0, 100);
 
-        if (randomValue <= dropChance) // Si sacaste menos de 50 (ganaste)
+        if (randomValue <= dropChance) 
         {
-            // 2. ¿Qué premio me toca?
             int lootType = Random.Range(0, 100);
 
             if (lootType <= healthPackChance)
             {
-                // Premio Mayor: Botiquín
                 if (healthPackPrefab != null)
                     Instantiate(healthPackPrefab, transform.position, Quaternion.identity);
             }
             else
             {
-                // Premio Normal: Moneda
                 if (coinPrefab != null)
                     Instantiate(coinPrefab, transform.position, Quaternion.identity);
             }

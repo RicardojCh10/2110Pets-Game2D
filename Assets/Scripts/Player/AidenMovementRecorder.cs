@@ -6,23 +6,21 @@ public class AidenMovementRecorder : MonoBehaviour
     public float delayTime = 0.25f; 
     
     private List<Vector3> positionHistory = new List<Vector3>(); 
-    private List<float> velocityYHistory = new List<float>(); // NUEVO: Para velocidad Y
+    private List<float> velocityYHistory = new List<float>();
     private int historyLength;
-    private Rigidbody2D rb; // Para acceder a la velocidad
+    private Rigidbody2D rb;
 
     void Start()
     {
         historyLength = Mathf.RoundToInt(delayTime / Time.fixedDeltaTime);
-        rb = GetComponent<Rigidbody2D>(); // OBTENER EL RB
+        rb = GetComponent<Rigidbody2D>(); 
     }
 
     void FixedUpdate()
     {
-        // 1. Guardar la posición y la velocidad Y
         positionHistory.Insert(0, transform.position);
-        velocityYHistory.Insert(0, rb.linearVelocity.y); // GRABAR VELOCIDAD Y
+        velocityYHistory.Insert(0, rb.linearVelocity.y);
         
-        // 2. Limitar la longitud
         if (positionHistory.Count > historyLength)
         {
             positionHistory.RemoveAt(positionHistory.Count - 1);
@@ -36,7 +34,6 @@ public class AidenMovementRecorder : MonoBehaviour
         return positionHistory[historyLength - 1];
     }
 
-    // NUEVO: Función para que Kiro acceda a la velocidad vertical retrasada
     public float GetDelayedVelocityY()
     {
         if (velocityYHistory.Count < historyLength) return 0f;

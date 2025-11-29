@@ -6,17 +6,16 @@ using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
-    // --- Singleton Pattern ---
     public static GameManager Instance;
 
     [Header("Referencias de la UI")]
     public GameObject hudCanvas;
-    public Slider healthSlider; // <-- La barra de vida de Aiden
+    public Slider healthSlider; 
     public GameObject scoreContainer; 
     public TextMeshProUGUI scoreText;
     public GameObject gameOverPanel;
     public GameObject levelCompletePanel;
-    public TextMeshProUGUI levelCompleteText; //  Referencia al texto
+    public TextMeshProUGUI levelCompleteText; 
 
     [Header("Referencias del Jugador")]
     public PlayerInput playerInput;
@@ -24,15 +23,13 @@ public class GameManager : MonoBehaviour
     [Header("Variables del Jugador")]
     public int maxPlayerHealth = 100;
     private int currentPlayerHealth;
-    private int currentScore = 0; // El puntaje se mantiene entre niveles
+    private int currentScore = 0; 
 
-    // --- Lista de niveles ---
     [Header("Configuración de Nivel")]
     public string[] gameLevelSceneNames;
     public string mainMenuSceneName = "MainMenu";
     private int currentLevelIndex = 0;
 
-    // Variables de Audio
     [Header("Audio del Jugador")]
     public AudioClip playerDeathSound; 
     private AudioSource aidenAudioSource; 
@@ -50,7 +47,6 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject); 
             DontDestroyOnLoad(hudCanvas); 
-            // Buscar el AudioSource para la música al inicio
             musicSource = GetComponent<AudioSource>();
             if (musicSource == null)
             {
@@ -64,7 +60,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // --- Detectar cargas de escenas ---
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -75,15 +70,12 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    // --- Se llama CADA VEZ que se carga una escena ---
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name == mainMenuSceneName) return; 
 
         PlayerPrefs.SetString("SavedLevel", scene.name);
         PlayerPrefs.Save();
-
-        // Sincroniza el índice del nivel actual
         bool foundLevel = false;
         for (int i = 0; i < gameLevelSceneNames.Length; i++)
         {
@@ -99,12 +91,10 @@ public class GameManager : MonoBehaviour
         {
             SetupNewLevel();
 
-            // Configurar música de fondo según el nivel
             ManageBackgroundMusic(scene.name);
 
         }
 
-        // Configurar la fuente de audio de Aiden
         if (scene.name != mainMenuSceneName)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -119,32 +109,29 @@ public class GameManager : MonoBehaviour
     {
         AudioClip clipToPlay = null;
 
-        if (sceneName == gameLevelSceneNames[0]) // Nivel 1
+        if (sceneName == gameLevelSceneNames[0])
         {
             clipToPlay = level1Music;
         }
-        else if (sceneName == gameLevelSceneNames[1]) // Nivel 2
+        else if (sceneName == gameLevelSceneNames[1])
         {
             clipToPlay = level2Music;
         }
-        else if (sceneName == gameLevelSceneNames[2]) // Nivel 3
+        else if (sceneName == gameLevelSceneNames[2])
         {
             clipToPlay = level3Music;
         }
 
-        // Solo cambiar y reproducir si el clip es diferente al actual
         if (musicSource != null && clipToPlay != null && musicSource.clip != clipToPlay)
         {
             musicSource.clip = clipToPlay;
-            musicSource.loop = true; // Aseguramos que la música de nivel se repita
+            musicSource.loop = true; 
             musicSource.Play();
         }
     }
 
-    // Lógica de reinicio para CADA nivel
     void SetupNewLevel()
     {
-        // 1. Encontrar al nuevo jugador
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
         if (playerObject != null)
         {
@@ -156,10 +143,8 @@ public class GameManager : MonoBehaviour
             Debug.LogError("¡No se encontró al jugador! Asegúrate de que Aiden tenga el Tag 'Player'.");
         }
 
-        // 2. Reiniciar el tiempo
         Time.timeScale = 1f; 
 
-        // 3. Reiniciar estadísticas del jugador
         currentPlayerHealth = maxPlayerHealth;
         if(healthSlider != null) 
         {
@@ -167,10 +152,8 @@ public class GameManager : MonoBehaviour
             healthSlider.value = maxPlayerHealth;
         }
 
-        // 4. Actualizar puntaje en la UI
         if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
 
-        // 5. Ocultar paneles
         if(gameOverPanel != null) gameOverPanel.SetActive(false); 
         if(levelCompletePanel != null) levelCompletePanel.SetActive(false);
     }
@@ -179,17 +162,13 @@ public class GameManager : MonoBehaviour
 
     public void CompleteLevel()
     {
-        // 1. Desactivar control
         if (playerInput != null) playerInput.DeactivateInput();
-        Time.timeScale = 0f; // Pausa el juego
+        Time.timeScale = 0f;
 
-        // 2. Calcular el número del nivel (basado en el índice)
         int levelNumber = currentLevelIndex + 1;
 
-        // 3. Escribir el mensaje correcto
         if (levelCompleteText != null)
         {
-            // Comprueba si es el último nivel (el jefe final)
             if (currentLevelIndex == gameLevelSceneNames.Length - 1)
             {
                 levelCompleteText.text = "¡VICTORIA! ¡Has completado el juego! ";
@@ -200,11 +179,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // 4. Mostrar el panel
         if(levelCompletePanel != null) levelCompletePanel.SetActive(true);
     }
 
-    // --- Funciones de Botones ---
 
     public void OnRetryButton()
     {
@@ -248,7 +225,6 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // Opcional: Intentar reconectar si se perdió
             Debug.LogWarning("GameManager: No se encontró el HealthSlider para actualizar la vida.");
         }
         
@@ -257,35 +233,29 @@ public class GameManager : MonoBehaviour
 
 
 
-    // --- Curar al Jugador ---
     public void HealPlayer(int amount)
     {
         currentPlayerHealth += amount;
         
-        // No dejes que la vida supere el máximo
         if (currentPlayerHealth > maxPlayerHealth)
         {
             currentPlayerHealth = maxPlayerHealth;
         }
 
-        // Actualizar la barra de vida visualmente
         if(healthSlider != null) 
         {
             healthSlider.value = currentPlayerHealth;
         }
     }
 
-    // ---  Añadir Puntaje ---
     public void AddScore(int points)
     {
         currentScore += points;
         if(scoreText != null) scoreText.text = "Monedas: " + currentScore;
     }
 
-    // --- Manejar la muerte del jugador ---
     void PlayerDie()
     {
-        // Reproducir sonido de muerte
         if (aidenAudioSource != null && playerDeathSound != null)
         {
             aidenAudioSource.PlayOneShot(playerDeathSound);
